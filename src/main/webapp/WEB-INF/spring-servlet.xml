@@ -21,6 +21,9 @@
 <!--  返回处理，一般有json和页面  -->
     <bean class="org.springframework.web.servlet.view.BeanNameViewResolver"/>
 
+    <!--定义全局异常处理-->
+    <bean class="jj.common.SpringExceptionResolver"></bean>
+
 <!--    返回JSON处理-->
     <bean id="jsonView" class="org.springframework.web.servlet.view.json.MappingJackson2JsonView"/>
 

@@ -1,4 +1,4 @@
 package jj.dao;
 
-public class TestDao {
+public interface TestDao {
 }
