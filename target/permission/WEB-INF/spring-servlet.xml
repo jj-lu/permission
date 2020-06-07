@@ -11,6 +11,11 @@
 <!--  启动注解驱动的springMVC功能  -->
     <mvc:annotation-driven/>
 
+    <!--配置http上下文拦截器-->
+    <mvc:interceptors>
+        <bean class="jj.common.HttpInterceptor"></bean>
+    </mvc:interceptors>
+
 <!--    启动包扫描功能-->
     <context:component-scan base-package="jj.controller"/>
     <context:component-scan base-package="jj.service"/>
@@ -23,6 +28,9 @@
 
     <!--定义全局异常处理-->
     <bean class="jj.common.SpringExceptionResolver"></bean>
+
+    <!--定义spring上下文获取bean工具，禁用懒加载，项目运行时马上加载-->
+    <bean class="jj.common.ApplicationContextHelper" lazy-init="false"></bean>
 
 <!--    返回JSON处理-->
     <bean id="jsonView" class="org.springframework.web.servlet.view.json.MappingJackson2JsonView"/>
