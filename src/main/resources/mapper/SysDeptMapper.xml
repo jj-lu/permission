@@ -138,4 +138,38 @@
       operator_ip = #{operatorIp,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <select id="getAllDept" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from sys_dept
+  </select>
+
+  <select id="getChildDeptListByLevel" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from sys_dept
+    where
+    level like #{level} || '.%'-- level like '0.%'
+  </select>
+
+  <update id="batchUpdateLevel" parameterType="map" >
+     <foreach collection="sysDeptList" item="sysDept" separator=";">
+       update
+       set level = #{sysDept.level}
+       where id = #{sysDept.id}
+     </foreach>
+  </update>
+
+  <select id="countByNameAndParentId" parameterType="SysDept" resultType="int">
+    select count(1)
+    from sys_dept
+    where name = #{name}
+    <if test="parentId != null || parentId != ''">
+      and parent_id = #{parentId}
+    </if>
+    <if test="id != null || id != ''">
+      and id != #{id}
+    </if>
+  </select>
 </mapper>
