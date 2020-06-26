@@ -104,7 +104,8 @@ public class SysDeptService {
      * @return
      */
     private boolean checkExist(Integer parentId,String deptName,Integer deptId){
-        return sysDeptMapper.countByNameAndParentId(parentId,deptName,deptId) > 0;
+        int i = sysDeptMapper.countByNameAndParentId(parentId, deptName, deptId);
+        return i > 0;
     }
 
     /**

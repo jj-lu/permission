@@ -155,20 +155,20 @@
 
   <update id="batchUpdateLevel" parameterType="map" >
      <foreach collection="sysDeptList" item="sysDept" separator=";">
-       update
+       update sys_dept
        set level = #{sysDept.level}
        where id = #{sysDept.id}
      </foreach>
   </update>
 
-  <select id="countByNameAndParentId" parameterType="SysDept" resultType="int">
+  <select id="countByNameAndParentId" resultType="int">
     select count(1)
     from sys_dept
     where name = #{name}
-    <if test="parentId != null || parentId != ''">
+    <if test="parentId != null and parentId != ''">
       and parent_id = #{parentId}
     </if>
-    <if test="id != null || id != ''">
+    <if test="id != null and id != ''">
       and id != #{id}
     </if>
   </select>
