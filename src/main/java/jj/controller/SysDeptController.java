@@ -27,7 +27,7 @@ public class SysDeptController {
     private SysTreeService sysTreeService;
 
     /**
-     *
+     * 跳转到部门页面
      * @return
      */
     @RequestMapping("/dept.page")
@@ -66,7 +66,7 @@ public class SysDeptController {
     @RequestMapping("/update.json")
     @ResponseBody
     public JsonData updateDept(DeptParam deptParam){
-        sysDeptService.save(deptParam);
+        sysDeptService.update(deptParam);
         return JsonData.success();
     }
 }
