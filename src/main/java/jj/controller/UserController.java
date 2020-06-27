@@ -14,11 +14,23 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Controller
-@RequestMapping("/user")
 public class UserController {
 
     @Resource
     private SysUserService sysUserService;
+
+    /**
+     * 退出登录
+     * @param request
+     * @param response
+     */
+    @RequestMapping("/logout.page")
+    public void logout(HttpServletRequest request,HttpServletResponse response) throws IOException {
+        request.getSession().invalidate();
+        String path = "signin.jsp";
+        //请求转发
+        response.sendRedirect(path);
+    }
 
     /**
      * 登录方法

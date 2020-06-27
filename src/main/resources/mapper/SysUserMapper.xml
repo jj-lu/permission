@@ -164,8 +164,40 @@
 
   <select id="findByKeyword" parameterType="String" resultMap="BaseResultMap">
     select <include refid="Base_Column_List"/>
-    from system_user
+    from sys_user
     where telephone = #{keyword}
     or mail = #{keyword}
+  </select>
+
+  <select id="countByMail" resultType="int">
+    select count(1)
+    from sys_user
+    where mail = #{mail}
+    <if test="id != null and id != ''">
+      and id != #{id}
+    </if>
+  </select>
+
+  <select id="countByTelePone" resultType="int">
+    select count(1)
+    from sys_user
+    where telephone = #{telephone}
+    <if test="id != null and id != ''">
+      and id != #{id}
+    </if>
+  </select>
+
+  <select id="countByDeptId" parameterType="Integer" resultType="Integer">
+    select count(1)
+    from sys_user
+    where dept_id = #{deptId}
+  </select>
+
+  <select id="getPageByDeptId" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"/>
+    from sys_user
+    where dept_id = #{deptId}
+    order by username ASC
+    limit #{page.offset},#{page.pageSize}
   </select>
 </mapper>

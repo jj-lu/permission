@@ -42,6 +42,18 @@
         <url-pattern>/</url-pattern>
     </filter-mapping>
 
+    <!--登录过滤器-->
+    <filter>
+        <filter-name>loginFilter</filter-name>
+        <filter-class>jj.filter.LoginFilter</filter-class>
+    </filter>
+    <!--校验路径-->
+    <filter-mapping>
+        <filter-name>loginFilter</filter-name>
+        <url-pattern>/sys/*</url-pattern>
+        <url-pattern>/admin/*</url-pattern>
+    </filter-mapping>
+
 <!--    配置druid基本访问，处理druid相关请求-->
     <servlet>
         <servlet-name>DruidStatServlet</servlet-name>

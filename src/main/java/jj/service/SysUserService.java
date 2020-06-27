@@ -1,17 +1,22 @@
 package jj.service;
 
 import com.google.common.base.Preconditions;
+import jj.beans.PageQuery;
+import jj.beans.PageResult;
+import jj.common.RequestHolder;
 import jj.dao.SysUserMapper;
 import jj.exception.ParamException;
 import jj.model.SysUser;
 import jj.param.UserParam;
 import jj.util.BeanValidator;
+import jj.util.IpUtil;
 import jj.util.MD5Util;
 import jj.util.PasswordUtil;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class SysUserService {
@@ -41,8 +46,8 @@ public class SysUserService {
         SysUser user = SysUser.builder().username(param.getUsername()).telephone(param.getTelephone()).mail(param.getMail())
                 .password(encryptedPassword).deptId(param.getDeptId()).status(param.getStatus()).remark(param.getRemark()).build();
 
-        user.setOperator("system");
-        user.setOperateIp("127.0.0.1");
+        user.setOperator(RequestHolder.getCurrentUser().getUsername());
+        user.setOperateIp(IpUtil.getRemoteIp(RequestHolder.getCurrentRequest()));
         user.setOperateTime(new Date());
 
         //sendEmail
@@ -66,7 +71,11 @@ public class SysUserService {
         SysUser before = sysUserMapper.selectByPrimaryKey(param.getId());
         Preconditions.checkNotNull(before,"待更新的用户不存在");
         SysUser after = SysUser.builder().id(param.getId()).username(param.getUsername()).telephone(param.getTelephone())
-                .deptId(param.getDeptId()).status(param.getStatus()).build();
+                .deptId(param.getDeptId()).status(param.getStatus()).remark(param.getRemark()).build();
+
+        after.setOperator(RequestHolder.getCurrentUser().getUsername());
+        after.setOperateIp(IpUtil.getRemoteIp(RequestHolder.getCurrentRequest()));
+        after.setOperateTime(new Date());
         sysUserMapper.updateByPrimaryKeySelective(after);
     }
 
@@ -77,7 +86,7 @@ public class SysUserService {
      * @return
      */
     public boolean checkEmailExist(String mail,Integer userId){
-        return false;
+        return sysUserMapper.countByMail(mail,userId) > 0;
     }
 
     /**
@@ -87,7 +96,7 @@ public class SysUserService {
      * @return
      */
     public boolean checkTelephoneExist(String tele,Integer userId){
-        return false;
+        return sysUserMapper.countByTelePone(tele,userId) > 0;
     }
 
     /**
@@ -96,6 +105,16 @@ public class SysUserService {
      * @return
      */
     public SysUser findByKeyword(String keyword){
-        return null;
+        return sysUserMapper.findByKeyword(keyword);
+    }
+
+    public PageResult<SysUser> getPageByDeptId(int deptId, PageQuery page){
+        BeanValidator.check(page);
+        int count = sysUserMapper.countByDeptId(deptId);
+        if (count > 0){
+            List<SysUser> list = sysUserMapper.getPageByDeptId(deptId, page);
+            return PageResult.<SysUser>builder().total(count).data(list).build();
+        }
+        return PageResult.<SysUser>builder().build();
     }
 }

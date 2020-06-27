@@ -1,11 +1,13 @@
 package jj.service;
 
 import com.google.common.base.Preconditions;
+import jj.common.RequestHolder;
 import jj.dao.SysDeptMapper;
 import jj.exception.ParamException;
 import jj.model.SysDept;
 import jj.param.DeptParam;
 import jj.util.BeanValidator;
+import jj.util.IpUtil;
 import jj.util.LevelUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
@@ -33,8 +35,8 @@ public class SysDeptService {
         }
         SysDept sysDept = SysDept.builder().name(param.getName()).parentId(param.getParentId()).seq(param.getSeq()).remark(param.getRemark()).build();
         sysDept.setLevel(LevelUtil.calculateLevel(getLevel(param.getParentId()),param.getParentId()));
-        sysDept.setOperator("system");
-        sysDept.setOperatorIp("127.0.0.1");
+        sysDept.setOperator(RequestHolder.getCurrentUser().getUsername());
+        sysDept.setOperatorIp(IpUtil.getRemoteIp(RequestHolder.getCurrentRequest()));
         sysDept.setOperatorTime(new Date());
         sysDeptMapper.insertSelective(sysDept);
     }
@@ -56,8 +58,8 @@ public class SysDeptService {
         Preconditions.checkNotNull(before,"带更新的部门不存在");
         SysDept after = SysDept.builder().id(param.getId()).name(param.getName()).parentId(param.getParentId()).seq(param.getSeq()).remark(param.getRemark()).build();
         after.setLevel(LevelUtil.calculateLevel(getLevel(param.getParentId()),param.getParentId()));
-        after.setOperator("system");
-        after.setOperatorIp("127.0.0.1");
+        after.setOperator(RequestHolder.getCurrentUser().getUsername());
+        after.setOperatorIp(IpUtil.getRemoteIp(RequestHolder.getCurrentRequest()));
         after.setOperatorTime(new Date());
 
         updateWithChild(before,after);
