@@ -1,7 +1,14 @@
 package jj.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+
 import java.util.Date;
 
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class SysAclModule {
     private Integer id;
 
@@ -11,7 +18,7 @@ public class SysAclModule {
 
     private String level;
 
-    private String status;
+    private Integer status;
 
     private Integer seq;
 
@@ -55,12 +62,12 @@ public class SysAclModule {
         this.level = level == null ? null : level.trim();
     }
 
-    public String getStatus() {
+    public Integer getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
-        this.status = status == null ? null : status.trim();
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 
     public Integer getSeq() {

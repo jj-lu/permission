@@ -3,7 +3,9 @@ package jj.service;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
+import jj.dao.SysAclModuleMapper;
 import jj.dao.SysDeptMapper;
+import jj.dto.AclModuleLevelDto;
 import jj.dto.DeptLevelDto;
 import jj.model.SysDept;
 import jj.util.LevelUtil;
@@ -21,12 +23,16 @@ public class SysTreeService {
     @Resource
     private SysDeptMapper sysDeptMapper;
 
+    @Resource
+    private SysAclModuleMapper sysAclModuleMapper;
+
     public Comparator<DeptLevelDto> deptLevelDtoComparator = new Comparator<DeptLevelDto>() {
         @Override
         public int compare(DeptLevelDto o1, DeptLevelDto o2) {
             return o1.getSeq() - o2.getSeq();
         }
     };
+
 
     /**
      * 将部门列表转换成树结构
@@ -101,5 +107,6 @@ public class SysTreeService {
              }
          }
     }
+
 
 }

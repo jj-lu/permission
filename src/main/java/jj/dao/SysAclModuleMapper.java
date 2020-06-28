@@ -1,6 +1,10 @@
 package jj.dao;
 
 import jj.model.SysAclModule;
+import jj.model.SysDept;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 public interface SysAclModuleMapper {
     int deleteByPrimaryKey(Integer id);
@@ -14,4 +18,12 @@ public interface SysAclModuleMapper {
     int updateByPrimaryKeySelective(SysAclModule record);
 
     int updateByPrimaryKey(SysAclModule record);
+
+    int countByNameAndParentId(@Param("parentId") Integer parentId,@Param("name") String name,@Param("Id") Integer id);
+
+    List<SysAclModule> getChildAclModuleListByLevel(@Param("level") String level);
+
+    void batchUpdateLevel(@Param("sysAclModuleList") List<SysAclModule> sysAclModuleList);
+
+    List<SysAclModule> getAllAclModule();
 }

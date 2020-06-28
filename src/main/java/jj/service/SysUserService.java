@@ -12,12 +12,14 @@ import jj.util.BeanValidator;
 import jj.util.IpUtil;
 import jj.util.MD5Util;
 import jj.util.PasswordUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
 
+@Slf4j
 @Service
 public class SysUserService {
 
@@ -47,6 +49,7 @@ public class SysUserService {
                 .password(encryptedPassword).deptId(param.getDeptId()).status(param.getStatus()).remark(param.getRemark()).build();
 
         user.setOperator(RequestHolder.getCurrentUser().getUsername());
+        log.info("IP:"+IpUtil.getRemoteIp(RequestHolder.getCurrentRequest()));
         user.setOperateIp(IpUtil.getRemoteIp(RequestHolder.getCurrentRequest()));
         user.setOperateTime(new Date());
 
@@ -74,6 +77,7 @@ public class SysUserService {
                 .deptId(param.getDeptId()).status(param.getStatus()).remark(param.getRemark()).build();
 
         after.setOperator(RequestHolder.getCurrentUser().getUsername());
+
         after.setOperateIp(IpUtil.getRemoteIp(RequestHolder.getCurrentRequest()));
         after.setOperateTime(new Date());
         sysUserMapper.updateByPrimaryKeySelective(after);
