@@ -38,7 +38,7 @@ public class SysAclModuleService {
         if(checkExist(aclModuleParam.getParentId(),aclModuleParam.getName(),aclModuleParam.getId())){
             throw new ParamException("同一层级下存在相同名称的权限模块");
         }
-        SysAclModule aclModule = SysAclModule.builder().name(aclModuleParam.getName()).parentId(aclModuleParam.getParentId())
+        SysAclModule aclModule = SysAclModule.builder().name(aclModuleParam.getName()).parentId(aclModuleParam.getParentId()).level(LevelUtil.calculateLevel(getLevel(aclModuleParam.getParentId()),aclModuleParam.getParentId()))
                 .seq(aclModuleParam.getSeq()).status(aclModuleParam.getStatus()).remark(aclModuleParam.getRemark()).build();
         aclModule.setOperator(RequestHolder.getCurrentUser().getUsername());
         aclModule.setOperatorIp(IpUtil.getRemoteIp(RequestHolder.getCurrentRequest()));
@@ -95,8 +95,8 @@ public class SysAclModuleService {
         sysAclModuleMapper.updateByPrimaryKeySelective(after);
     }
 
-    private boolean checkExist(Integer parentId,String aclMOduleName,Integer deptId){
-        return sysAclModuleMapper.countByNameAndParentId(parentId,aclMOduleName,deptId) > 0;
+    private boolean checkExist(Integer parentId,String aclModuleName,Integer deptId){
+        return sysAclModuleMapper.countByNameAndParentId(parentId,aclModuleName,deptId) > 0;
     }
 
     private String getLevel(Integer deptId){

@@ -3,6 +3,7 @@ package jj.controller;
 import jj.common.JsonData;
 import jj.param.AclModuleParam;
 import jj.service.SysAclModuleService;
+import jj.service.SysTreeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +20,15 @@ public class SysAclModuleController {
     @Resource
     private SysAclModuleService sysAclModuleService;
 
+    @Resource
+    private SysTreeService sysTreeService;
+
+    @RequestMapping("/tree.json")
+    @ResponseBody
+    public JsonData tree(){
+        return JsonData.success(sysTreeService.aclModuleTree());
+    }
+
     @RequestMapping("/acl.page")
     public ModelAndView page(){
         return new ModelAndView("acl");
@@ -31,9 +41,9 @@ public class SysAclModuleController {
         return JsonData.success();
     }
 
-    @RequestMapping("/updata.json")
+    @RequestMapping("/update.json")
     @ResponseBody
-    public JsonData updataAclModule(AclModuleParam param){
+    public JsonData updateAclModule(AclModuleParam param){
         sysAclModuleService.update(param);
         return JsonData.success();
     }

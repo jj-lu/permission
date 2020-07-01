@@ -238,6 +238,7 @@
                 success : function (result) {
                     if(result.ret) {
                         aclModuleList = result.data;
+                        console.info(aclModuleList);
                         var rendered = Mustache.render(aclModuleListTemplate, {
                             aclModuleList: result.data,
                             "showDownAngle": function () {
@@ -349,6 +350,7 @@
             if (aclModuleList && aclModuleList.length > 0) {
                 $(aclModuleList).each(function (i, aclModule) {
                     aclModuleMap[aclModule.id] = aclModule;
+                    console.info(aclModule);
                     if (aclModule.aclModuleList && aclModule.aclModuleList.length > 0) {
                         var rendered = Mustache.render(aclModuleListTemplate, {
                             aclModuleList: aclModule.aclModuleList,
@@ -373,8 +375,8 @@
                e.preventDefault();
                e.stopPropagation();
                $(this).parent().parent().parent().children().children(".aclModule-name").toggleClass("hidden");
-               if($(this).is(".fa-angle-double-down")) {
-                   $(this).removeClass("fa-angle-double-down").addClass("fa-angle-double-up");
+               if($(this).is(".fa-angle-double-down")) {//需要加点
+                   $(this).removeClass("fa-angle-double-down").addClass("fa-angle-double-up");//不需要加点
                } else{
                    $(this).removeClass("fa-angle-double-up").addClass("fa-angle-double-down");
                }

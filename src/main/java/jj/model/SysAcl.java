@@ -1,7 +1,14 @@
 package jj.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+
 import java.util.Date;
 
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class SysAcl {
     private Integer id;
 
@@ -9,7 +16,7 @@ public class SysAcl {
 
     private String name;
 
-    private Integer aclmoduleld;
+    private Integer aclModuleId;
 
     private String url;
 
@@ -52,11 +59,11 @@ public class SysAcl {
     }
 
     public Integer getAclmoduleld() {
-        return aclmoduleld;
+        return aclModuleId;
     }
 
-    public void setAclmoduleld(Integer aclmoduleld) {
-        this.aclmoduleld = aclmoduleld;
+    public void setAclmoduleld(Integer aclModuleId) {
+        this.aclModuleId = aclModuleId;
     }
 
     public String getUrl() {

@@ -5,7 +5,7 @@
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="code" property="code" jdbcType="VARCHAR" />
     <result column="name" property="name" jdbcType="VARCHAR" />
-    <result column="aclModuleld" property="aclmoduleld" jdbcType="INTEGER" />
+    <result column="aclModuleId" property="aclModuleId" jdbcType="INTEGER" />
     <result column="url" property="url" jdbcType="VARCHAR" />
     <result column="type" property="type" jdbcType="INTEGER" />
     <result column="status" property="status" jdbcType="INTEGER" />
@@ -16,7 +16,7 @@
     <result column="operate_ip" property="operateIp" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, code, name, aclModuleld, url, type, status, seq, remark, operator, operate_time, 
+    id, code, name, aclModuleId, url, type, status, seq, remark, operator, operate_time,
     operate_ip
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
@@ -31,12 +31,12 @@
   </delete>
   <insert id="insert" parameterType="jj.model.SysAcl" >
     insert into sys_acl (id, code, name, 
-      aclModuleld, url, type, 
+      aclModuleId, url, type,
       status, seq, remark, 
       operator, operate_time, operate_ip
       )
     values (#{id,jdbcType=INTEGER}, #{code,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
-      #{aclmoduleld,jdbcType=INTEGER}, #{url,jdbcType=VARCHAR}, #{type,jdbcType=INTEGER}, 
+      #{aclModuleId,jdbcType=INTEGER}, #{url,jdbcType=VARCHAR}, #{type,jdbcType=INTEGER},
       #{status,jdbcType=INTEGER}, #{seq,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR}, 
       #{operator,jdbcType=VARCHAR}, #{operateTime,jdbcType=TIMESTAMP}, #{operateIp,jdbcType=VARCHAR}
       )
@@ -53,8 +53,8 @@
       <if test="name != null" >
         name,
       </if>
-      <if test="aclmoduleld != null" >
-        aclModuleld,
+      <if test="aclModuleId != null" >
+        aclModuleId,
       </if>
       <if test="url != null" >
         url,
@@ -91,8 +91,8 @@
       <if test="name != null" >
         #{name,jdbcType=VARCHAR},
       </if>
-      <if test="aclmoduleld != null" >
-        #{aclmoduleld,jdbcType=INTEGER},
+      <if test="aclModuleId != null" >
+        #{aclModuleId,jdbcType=INTEGER},
       </if>
       <if test="url != null" >
         #{url,jdbcType=VARCHAR},
@@ -129,8 +129,8 @@
       <if test="name != null" >
         name = #{name,jdbcType=VARCHAR},
       </if>
-      <if test="aclmoduleld != null" >
-        aclModuleld = #{aclmoduleld,jdbcType=INTEGER},
+      <if test="aclModuleId != null" >
+        aclModuleId = #{aclModuleId,jdbcType=INTEGER},
       </if>
       <if test="url != null" >
         url = #{url,jdbcType=VARCHAR},
@@ -163,7 +163,7 @@
     update sys_acl
     set code = #{code,jdbcType=VARCHAR},
       name = #{name,jdbcType=VARCHAR},
-      aclModuleld = #{aclmoduleld,jdbcType=INTEGER},
+      aclModuleId = #{aclModuleId,jdbcType=INTEGER},
       url = #{url,jdbcType=VARCHAR},
       type = #{type,jdbcType=INTEGER},
       status = #{status,jdbcType=INTEGER},
@@ -174,4 +174,29 @@
       operate_ip = #{operateIp,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <select id="countByAclModuleId" parameterType="Integer" resultType="int">
+    select count(1)
+    from sys_acl
+    where aclModuleId = #{aclModuleId}
+    limit 1
+  </select>
+
+  <select id="getPageByAclModuleId" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"/>
+    from sys_acl
+    where aclModuleId = #{aclModuleId}
+    order by seq ASC ,name ASC
+    limit #{page.offset},#{page.pageSize}
+  </select>
+
+  <select id="countByNameAndAclModuleId" resultType="int">
+    select count(1)
+    from sys_acl
+    where aclModuleId = #{aclModuleId}
+    and name = #{name}
+    <if test="id != null and id != ''">
+      and id != #{id}
+    </if>
+  </select>
 </mapper>
