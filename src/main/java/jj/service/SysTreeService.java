@@ -162,5 +162,13 @@ public class SysTreeService {
          }
     }
 
+    public List<AclModuleLevelDto> roleTree(int roleId){
+        //当前用户已分配的权限点
+
+        //当前角色分配的权限点
+
+        return null;
+    }
+
 
 }

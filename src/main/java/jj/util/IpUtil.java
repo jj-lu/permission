@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import javax.servlet.http.HttpServletRequest;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -40,7 +41,6 @@ public class IpUtil {
         if (ip.length() > 23) {
             ip = ip.substring(0, 23);
         }
-
         return ip;
     }
 
