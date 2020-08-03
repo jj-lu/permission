@@ -26,4 +26,6 @@ public interface SysAclMapper {
     int countByNameAndAclModuleId(@Param("name") String name,@Param("aclModuleId") Integer aclModuleId,@Param("id") Integer id);
 
     List<SysAcl> getAll();
+
+    List<SysAcl> getByIdList(@Param("ids") List<Integer> ids);
 }

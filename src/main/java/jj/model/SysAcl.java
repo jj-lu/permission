@@ -2,6 +2,7 @@ package jj.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
@@ -9,6 +10,7 @@ import java.util.Date;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(of = {"id"})
 public class SysAcl {
     private Integer id;
 
@@ -58,11 +60,11 @@ public class SysAcl {
         this.name = name == null ? null : name.trim();
     }
 
-    public Integer getAclmoduleld() {
+    public Integer getAclModuleId() {
         return aclModuleId;
     }
 
-    public void setAclmoduleld(Integer aclModuleId) {
+    public void setAclModuleId(Integer aclModuleId) {
         this.aclModuleId = aclModuleId;
     }
 

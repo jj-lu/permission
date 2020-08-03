@@ -1,8 +1,12 @@
 package jj.service;
 
+import com.google.common.collect.Lists;
+import jj.common.RequestHolder;
 import jj.dao.SysAclMapper;
+import jj.dao.SysRoleAclMapper;
 import jj.dao.SysRoleUserMapper;
 import jj.model.SysAcl;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -20,17 +24,18 @@ public class SysCoreService {
     @Resource
     private SysRoleUserMapper sysRoleUserMapper;
 
+    @Resource
+    private SysRoleAclMapper sysRoleAclMapper;
+
     /**
      * 获取当前用户的权限点
      * @return
      */
     public List<SysAcl> getCurrentUserAclList(){
-        //判断是否超级管理员
-        if (isSuperAdmin()){
-            return sysAclMapper.getAll();
-        }
-        //
-        return null;
+
+        int userId = RequestHolder.getCurrentUser().getId();
+        List<SysAcl> sysAclList = getUserAclList(userId);
+        return sysAclList;
     }
 
     /**
@@ -39,7 +44,12 @@ public class SysCoreService {
      * @return
      */
     public List<SysAcl> getRoleAclList(int roleId){
-        return null;
+        List<Integer> aclIdList = sysRoleAclMapper.getAclIdListByRoleIdList(Lists.newArrayList(roleId));
+        if (CollectionUtils.isEmpty(aclIdList)){
+            return Lists.newArrayList();
+        }
+        return sysAclMapper.getByIdList(aclIdList);
+
     }
 
     /**
@@ -48,7 +58,20 @@ public class SysCoreService {
      * @return
      */
     public List<SysAcl> getUserAclList(int userId){
-        return null;
+        //判断是否超级管理员
+        if (isSuperAdmin()){
+            return sysAclMapper.getAll();
+        }
+        List<Integer> userRoleIdList = sysRoleUserMapper.getRoleIdListByUserId(userId);
+        if (CollectionUtils.isEmpty(userRoleIdList)){
+            return Lists.newArrayList();
+        }
+        List<Integer> userAclIdList = sysRoleAclMapper.getAclIdListByRoleIdList(userRoleIdList);
+        if (CollectionUtils.isEmpty(userAclIdList)){
+            return Lists.newArrayList();
+        }
+
+        return sysAclMapper.getByIdList(userAclIdList);
     }
 
 

@@ -269,6 +269,7 @@
                 type: 'POST',
                 success: function (result) {
                     if (result.ret) {
+                        console.info(result.data);
                         renderRoleTree(result.data);
                     } else {
                         showMessage("加载角色权限数据", result.msg, false);
@@ -301,6 +302,7 @@
         function recursivePrepareTreeData(aclModuleList) {
             // prepare nodeMap
             if (aclModuleList && aclModuleList.length > 0) {
+                console.info(aclModuleList);
                 $(aclModuleList).each(function(i, aclModule) {
                     var hasChecked = false;
                     if (aclModule.aclList && aclModule.aclList.length > 0) {

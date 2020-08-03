@@ -3,31 +3,28 @@ package jj.service;
 import com.google.common.base.Preconditions;
 import jj.common.RequestHolder;
 import jj.dao.SysAclModuleMapper;
-import jj.dao.SysDeptMapper;
 import jj.exception.ParamException;
 import jj.model.SysAclModule;
-import jj.model.SysDept;
 import jj.param.AclModuleParam;
 import jj.util.BeanValidator;
 import jj.util.IpUtil;
 import jj.util.LevelUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+@Slf4j
 @Service
 public class SysAclModuleService {
 
     @Resource
     private SysAclModuleMapper sysAclModuleMapper;
 
-    @Resource
-    private SysDeptMapper sysDeptMapper;
 
     /**
      * 新增权限模块
@@ -43,6 +40,8 @@ public class SysAclModuleService {
         aclModule.setOperator(RequestHolder.getCurrentUser().getUsername());
         aclModule.setOperatorIp(IpUtil.getRemoteIp(RequestHolder.getCurrentRequest()));
         aclModule.setOperatorTime(new Date());
+
+        //log.info(aclModule.toString());
 
         sysAclModuleMapper.insertSelective(aclModule);
     }
@@ -100,7 +99,7 @@ public class SysAclModuleService {
     }
 
     private String getLevel(Integer deptId){
-        SysDept sysDept = sysDeptMapper.selectByPrimaryKey(deptId);
+        SysAclModule sysDept = sysAclModuleMapper.selectByPrimaryKey(deptId);
         if (sysDept == null){
             return null;
         }

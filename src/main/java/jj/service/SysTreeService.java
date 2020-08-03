@@ -3,10 +3,13 @@ package jj.service;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
+import jj.dao.SysAclMapper;
 import jj.dao.SysAclModuleMapper;
 import jj.dao.SysDeptMapper;
+import jj.dto.AclDto;
 import jj.dto.AclModuleLevelDto;
 import jj.dto.DeptLevelDto;
+import jj.model.SysAcl;
 import jj.model.SysAclModule;
 import jj.model.SysDept;
 import jj.util.LevelUtil;
@@ -15,10 +18,8 @@ import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -30,6 +31,12 @@ public class SysTreeService {
     @Resource
     private SysAclModuleMapper sysAclModuleMapper;
 
+    @Resource
+    private SysCoreService sysCoreService;
+
+    @Resource
+    private SysAclMapper sysAclMapper;
+
     public Comparator<DeptLevelDto> deptLevelDtoComparator = new Comparator<DeptLevelDto>() {
         @Override
         public int compare(DeptLevelDto o1, DeptLevelDto o2) {
@@ -40,6 +47,13 @@ public class SysTreeService {
     public Comparator<AclModuleLevelDto> aclModuleLevelDtoComparator = new Comparator<AclModuleLevelDto>() {
         @Override
         public int compare(AclModuleLevelDto o1, AclModuleLevelDto o2) {
+            return o1.getSeq() - o2.getSeq();
+        }
+    };
+
+    public Comparator<AclDto> aclComparator = new Comparator<AclDto>() {
+        @Override
+        public int compare(AclDto o1, AclDto o2) {
             return o1.getSeq() - o2.getSeq();
         }
     };
@@ -162,12 +176,87 @@ public class SysTreeService {
          }
     }
 
+    /**
+     * 权限树
+     * @param roleId
+     * @return
+     */
     public List<AclModuleLevelDto> roleTree(int roleId){
         //当前用户已分配的权限点
-
+        List<SysAcl> userAclList = sysCoreService.getCurrentUserAclList();
         //当前角色分配的权限点
+        List<SysAcl> roleAclList = sysCoreService.getRoleAclList(roleId);
 
-        return null;
+        userAclList.forEach(acl -> log.info("用户分配："+acl));
+        roleAclList.forEach(acl -> log.info("角色分配："+acl));
+
+        //使用流遍历，构造set
+        Set<Integer> userAclIdList = userAclList.stream().map(sysAcl -> sysAcl.getId()).collect(Collectors.toSet());
+        Set<Integer> roleAclIdList = roleAclList.stream().map(sysAcl -> sysAcl.getId()).collect(Collectors.toSet());
+
+        //系统权限点全集
+        List<SysAcl> allAclList = sysAclMapper.getAll();
+        //HashSet<SysAcl> aclset = new HashSet<>(allAclList);
+//        //将当前用户已分配的权限点和角色分配的权限点做并集
+//        Set<SysAcl> aclset = new HashSet<>(userAclList);
+//        aclset.addAll(roleAclList);
+
+        //遍历全集，赋值是否被选中和是否有权限
+        List<AclDto> aclDtoList = Lists.newArrayList();
+        for (SysAcl acl : allAclList){
+            AclDto dto = AclDto.adapt(acl);
+            if (userAclIdList.contains(dto.getId())){
+                dto.setHasAcl(true);
+            }
+            if (roleAclIdList.contains(dto.getId())){
+                dto.setChecked(true);
+            }
+            aclDtoList.add(dto);
+        }
+
+        return aclListToTree(aclDtoList);
+    }
+
+    /**
+     * 转换成权限树
+     * @param aclDtoList
+     * @return
+     */
+    public List<AclModuleLevelDto> aclListToTree(List<AclDto> aclDtoList){
+        if (CollectionUtils.isEmpty(aclDtoList)){
+            return Lists.newArrayList();
+        }
+
+        List<AclModuleLevelDto> aclModuleLevelList = aclModuleTree();
+
+        //每个模块的权限点集合
+        ArrayListMultimap<Integer, AclDto> moduleIdAclMap = ArrayListMultimap.create();
+        for (AclDto acl : aclDtoList){
+            if (acl.getStatus() == 1 ){
+                moduleIdAclMap.put(acl.getAclModuleId(),acl);
+            }
+        }
+        bindAclsWithOrder(aclModuleLevelList,moduleIdAclMap);
+        return aclModuleLevelList;
+    }
+
+    /**
+     * 排序权限树
+     * @param aclModuleLevelList
+     * @param moduleIdAclMap
+     */
+    public void bindAclsWithOrder(List<AclModuleLevelDto> aclModuleLevelList,ArrayListMultimap<Integer, AclDto> moduleIdAclMap){
+        if (CollectionUtils.isEmpty(aclModuleLevelList)){
+            return;
+        }
+        for (AclModuleLevelDto dto : aclModuleLevelList){
+            List<AclDto> aclDtoList = moduleIdAclMap.get(dto.getId());
+            if (CollectionUtils.isNotEmpty(aclDtoList)){
+                Collections.sort(aclDtoList,aclComparator);
+                dto.setAclList(aclDtoList);
+            }
+            bindAclsWithOrder(dto.getAclModuleList(),moduleIdAclMap);
+        }
     }
 
 

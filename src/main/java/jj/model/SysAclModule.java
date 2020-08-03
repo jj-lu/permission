@@ -3,12 +3,14 @@ package jj.model;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.Date;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString
 public class SysAclModule {
     private Integer id;
 

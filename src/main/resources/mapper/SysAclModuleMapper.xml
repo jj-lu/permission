@@ -155,7 +155,7 @@
     <include refid="Base_Column_List"/>
     from sys_acl_module
     where
-    level like #{level} || '.%'-- level like '0.%'
+    level like concat(#{level},'.%')
   </select>
 
   <update id="batchUpdateLevel" parameterType="map" >

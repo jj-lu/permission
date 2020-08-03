@@ -1,6 +1,7 @@
 package jj.controller;
 
 import jj.common.JsonData;
+import jj.dto.AclModuleLevelDto;
 import jj.param.AclModuleParam;
 import jj.service.SysAclModuleService;
 import jj.service.SysTreeService;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 @Controller
 @RequestMapping("/sys/aclModule")
@@ -26,6 +28,8 @@ public class SysAclModuleController {
     @RequestMapping("/tree.json")
     @ResponseBody
     public JsonData tree(){
+        List<AclModuleLevelDto> dtoList = sysTreeService.aclModuleTree();
+        dtoList.forEach(aclModuleLevelDto -> log.info(aclModuleLevelDto.toString()));
         return JsonData.success(sysTreeService.aclModuleTree());
     }
 
@@ -37,6 +41,7 @@ public class SysAclModuleController {
     @RequestMapping("/save.json")
     @ResponseBody
     public JsonData saveAclModule(AclModuleParam param){
+        log.info(param.toString());
         sysAclModuleService.save(param);
         return JsonData.success();
     }

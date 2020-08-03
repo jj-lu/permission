@@ -150,7 +150,7 @@
     <include refid="Base_Column_List"/>
     from sys_dept
     where
-    level like #{level} || '.%'-- level like '0.%'
+    level like concat(#{level},'.%')
   </select>
 
   <update id="batchUpdateLevel" parameterType="map" >

@@ -487,6 +487,7 @@
                     var rendered = Mustache.render(aclListTemplate, {
                         aclList: result.data.data,
                         "showAclModuleName": function () {
+                            console.info(this.aclModuleId);
                             return aclModuleMap[this.aclModuleId].name;
                         },
                         "showStatus": function() {

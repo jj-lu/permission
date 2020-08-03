@@ -35,7 +35,7 @@
 <!--        最长等待时间-->
         <property name="maxWait" value="60000" />
 <!--        过滤器-->
-        <property name="filters" value="stat,wall" />
+        <property name="filters" value="stat,wall-filter" />
     </bean>
 
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
@@ -70,6 +70,15 @@
     <bean id="wall-filter" class="com.alibaba.druid.wall.WallFilter">
 <!--        配置数据库类型-->
         <property name="dbType" value="mysql"/>
+        <property name="config" value="wall-config"/>
     </bean>
 
+    <!--解决批量更新出现的问题
+    Caused by: java.sql.SQLException: sql injection violation, multi-statement not allow : update sys_acl_module
+      set level = ?
+      where id = ?
+     ; -->
+    <bean id="wall-config" class="com.alibaba.druid.wall.WallConfig">
+        <property name="multiStatementAllow" value="true"/>
+    </bean>
 </beans>
