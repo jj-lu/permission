@@ -39,4 +39,5 @@ public interface SysUserMapper {
 
     //查询所有用户
     List<SysUser> getAll();
+
 }

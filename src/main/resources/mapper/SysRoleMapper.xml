@@ -139,4 +139,13 @@
       and id != #{id}
     </if>
   </select>
+
+  <select id="getByIdList" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"></include>
+    from sys_role
+    where id in
+    <foreach collection="idList" item="id" separator="," open="(" close=")">
+      #{id}
+    </foreach>
+  </select>
 </mapper>

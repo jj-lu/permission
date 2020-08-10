@@ -2,6 +2,7 @@ package jj.service;
 
 import com.google.common.base.Preconditions;
 import jj.common.RequestHolder;
+import jj.dao.SysAclMapper;
 import jj.dao.SysAclModuleMapper;
 import jj.exception.ParamException;
 import jj.model.SysAclModule;
@@ -24,6 +25,9 @@ public class SysAclModuleService {
 
     @Resource
     private SysAclModuleMapper sysAclModuleMapper;
+
+    @Resource
+    private SysAclMapper sysAclMapper;
 
 
     /**
@@ -104,5 +108,22 @@ public class SysAclModuleService {
             return null;
         }
         return sysDept.getLevel();
+    }
+
+    //删除
+    public void delete(int aclModuleId){
+        SysAclModule aclModule = sysAclModuleMapper.selectByPrimaryKey(aclModuleId);
+
+        Preconditions.checkNotNull(aclModule,"待删除权限模块不存在，不能删除");
+
+        if (sysAclModuleMapper.countByParentId(aclModuleId) > 0){
+            throw new ParamException("当前模块下面有子模块，无法删除");
+        }
+
+        if (sysAclMapper.countByAclModuleId(aclModuleId) > 0){
+            throw new ParamException("当前模块下有权限，无法删除");
+        }
+
+        sysAclModuleMapper.deleteByPrimaryKey(aclModuleId);
     }
 }

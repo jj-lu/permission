@@ -29,4 +29,7 @@ public interface SysDeptMapper {
 
     //是否存在同部门下同名的部门
     int countByNameAndParentId(@Param("parentId") Integer parentId,@Param("name") String name,@Param("id") Integer id);
+
+    //判断是否有子部门
+    int countByParentId(@Param("parentId") int parentId);
 }

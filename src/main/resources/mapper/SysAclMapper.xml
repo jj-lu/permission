@@ -213,4 +213,10 @@
       #{id}
     </foreach>
   </select>
+
+  <select id="getByUrl" parameterType="String" resultType="BaseResultMap">
+    select <include refid="Base_Column_List"></include>
+    from sys_acl
+    where url = #{url} <!--url is not null and url != '' and #{url} regexp url-->
+  </select>
 </mapper>

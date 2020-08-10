@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * 核心权限
@@ -80,6 +82,38 @@ public class SysCoreService {
      * @return
      */
     public boolean isSuperAdmin(){
+        return true;
+    }
+
+    public boolean hasUrlAcl(String url){
+        if (isSuperAdmin()){
+            return true;
+        }
+
+        List<SysAcl> aclList = sysAclMapper.getByUrl(url);
+        if (CollectionUtils.isEmpty(aclList)){
+            return true;
+        }
+
+        List<SysAcl> userAclList = getCurrentUserAclList();
+        Set<Integer> userAclIdSet = userAclList.stream().map(acl -> acl.getId()).collect(Collectors.toSet());
+
+        boolean hasValidAcl = false;
+        //只要有一个权限点有权限，就可以访问
+        for(SysAcl acl : aclList){
+            if (acl.getStatus() != 1 || acl == null){
+                continue;
+            }
+            hasValidAcl = true;
+            if (userAclIdSet.contains(acl.getId())){
+                return true;
+            }
+        }
+
+        if (!hasValidAcl){
+            return true;
+        }
+
         return true;
     }
 }

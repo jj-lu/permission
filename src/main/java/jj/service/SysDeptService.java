@@ -3,6 +3,7 @@ package jj.service;
 import com.google.common.base.Preconditions;
 import jj.common.RequestHolder;
 import jj.dao.SysDeptMapper;
+import jj.dao.SysUserMapper;
 import jj.exception.ParamException;
 import jj.model.SysDept;
 import jj.param.DeptParam;
@@ -22,6 +23,9 @@ public class SysDeptService {
 
     @Resource
     private SysDeptMapper sysDeptMapper;
+
+    @Resource
+    private SysUserMapper sysUserMapper;
 
     /**
      * 保存部门信息
@@ -121,5 +125,28 @@ public class SysDeptService {
             return null;
         }
         return dept.getLevel();
+    }
+
+    /**
+     * 删除部门
+     * @param deptId
+     */
+    public void delete(int deptId){
+        SysDept dept = sysDeptMapper.selectByPrimaryKey(deptId);
+
+        //判断部门是否存在
+        Preconditions.checkNotNull(dept,"待删除的部门不存在，无法删除");
+
+        //判断是否有子部门
+        if (sysDeptMapper.countByParentId(deptId) > 0){
+            throw new ParamException("当前部门下有子部门，无法删除");
+        }
+
+        //判断部门下是否有员工
+        if (sysUserMapper.countByDeptId(deptId) > 0){
+            throw new ParamException("当前部门下有用户，无法删除");
+        }
+
+        sysDeptMapper.deleteByPrimaryKey(deptId);
     }
 }

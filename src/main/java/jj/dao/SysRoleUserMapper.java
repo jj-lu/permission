@@ -21,4 +21,10 @@ public interface SysRoleUserMapper {
     List<Integer> getRoleIdListByUserId(@Param("userId") int userId);
 
     List<Integer> getUserIdListByRoleId(@Param("roleId") int roleId);
+
+    int deleteByRoleId(Integer roleId);
+
+    void batchInsert(@Param("roleUserList") List<SysRoleUser> roleUserList);
+
+    List<Integer> getUserIdListByRoleIdList(@Param("roleIdList") List<Integer> roleIdList);
 }
