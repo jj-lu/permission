@@ -1,3 +1,5 @@
+<%@ page import="jj.model.SysUser" %>
+<%@ page import="jj.common.RequestHolder" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html lang="en">
