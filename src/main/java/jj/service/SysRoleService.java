@@ -36,6 +36,9 @@ public class SysRoleService {
     @Resource
     private SysUserMapper sysUserMapper;
 
+    @Resource
+    private SysLogService sysLogService;
+
     public void save(RoleParam param){
         BeanValidator.check(param);
          if (checkExist(param.getName(),param.getId())){
@@ -47,6 +50,7 @@ public class SysRoleService {
          role.setOperateTime(new Date());
          role.setOperator(RequestHolder.getCurrentUser().getUsername());
          sysRoleMapper.insertSelective(role);
+         sysLogService.saveRoleLog(null,role);
     }
 
     public void update(RoleParam param){
@@ -63,6 +67,7 @@ public class SysRoleService {
         after.setOperateTime(new Date());
         after.setOperateIp(IpUtil.getUserIP(RequestHolder.getCurrentRequest()));
         sysRoleMapper.updateByPrimaryKeySelective(after);
+        sysLogService.saveRoleLog(before,after);
     }
 
     public List<SysRole> getAll(){

@@ -29,6 +29,9 @@ public class SysAclModuleService {
     @Resource
     private SysAclMapper sysAclMapper;
 
+    @Resource
+    private SysLogService sysLogService;
+
 
     /**
      * 新增权限模块
@@ -48,6 +51,7 @@ public class SysAclModuleService {
         //log.info(aclModule.toString());
 
         sysAclModuleMapper.insertSelective(aclModule);
+        sysLogService.saveAclModuleLog(null,aclModule);
     }
 
     /**
@@ -70,7 +74,7 @@ public class SysAclModuleService {
         after.setOperatorTime(new Date());
 
         updateWithChild(before,after);
-
+        sysLogService.saveAclModuleLog(before,after);
     }
 
     /**

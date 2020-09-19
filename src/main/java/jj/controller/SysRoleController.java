@@ -73,7 +73,7 @@ public class SysRoleController {
     @ResponseBody
     public JsonData changeAcls(@RequestParam("roleId") int roleId,@RequestParam(value = "aclIds",required = false,defaultValue = "") String aclIds){
         List<Integer> aclIdList = StringUtil.splitToListInt(aclIds);
-        sysRoleAclService.updateRoleAcls(roleId,aclIdList);
+        sysRoleAclService.changeRoleAcls(roleId,aclIdList);
         return JsonData.success();
     }
 
@@ -81,7 +81,7 @@ public class SysRoleController {
     @ResponseBody
     public JsonData changeUsers(@RequestParam("roleId") int roleId,@RequestParam(value = "userIds",required = false,defaultValue = "") String userIds){
         List<Integer> userIdList = StringUtil.splitToListInt(userIds);
-        sysRoleUserService.updateRoleUsers(roleId,userIdList);
+        sysRoleUserService.changeRoleUsers(roleId,userIdList);
         return JsonData.success();
     }
 

@@ -27,6 +27,8 @@ public class SysDeptService {
     @Resource
     private SysUserMapper sysUserMapper;
 
+    @Resource SysLogService sysLogService;
+
     /**
      * 保存部门信息
      * @param param
@@ -43,6 +45,7 @@ public class SysDeptService {
         sysDept.setOperatorIp(IpUtil.getRemoteIp(RequestHolder.getCurrentRequest()));
         sysDept.setOperatorTime(new Date());
         sysDeptMapper.insertSelective(sysDept);
+        sysLogService.saveDeptLog(null,sysDept);
     }
 
     /**
@@ -67,6 +70,7 @@ public class SysDeptService {
         after.setOperatorTime(new Date());
 
         updateWithChild(before,after);
+        sysLogService.saveDeptLog(before,after);
     }
 
     /**
